@@ -17,7 +17,7 @@ namespace AICarriers {
         static void Main() {
             bool createdNew;
             using (Mutex mutex = new Mutex(true, "{3A2A9DD1-BB04-4796-AD2B-75AB94A56004}", out createdNew)) {
-                if (createdNew) {
+                if (createdNew && SimConnectHelpers.IsLocalRunning) {
                     AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);

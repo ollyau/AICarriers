@@ -28,6 +28,16 @@ namespace AICarriers {
         }
     }
 
+    public delegate void OpenEventHandler(object sender, OpenEventArgs e);
+    public delegate void DisconnectEventHandler(object sender, EventArgs e);
+
+    public class OpenEventArgs : EventArgs {
+        public string SimulatorName { get; private set; }
+        public OpenEventArgs(string SimulatorName) {
+            this.SimulatorName = SimulatorName;
+        }
+    }
+
     class AICarriersManager {
         private static readonly string[] POSITION_TYPES = {
         		"User position",
@@ -84,6 +94,10 @@ namespace AICarriers {
         // logging
         private Log log;
 
+        // events
+        public event OpenEventHandler OpenEvent;
+        public event DisconnectEventHandler DisconnectEvent;
+
         public AICarriersManager(string confDirectory) {
             log = Log.Instance;
             sc = new SimConnect(null);
@@ -135,7 +149,7 @@ namespace AICarriers {
         public void Disconnect() {
             log.Info("Disconnecting.");
             sc.Close();
-            System.Windows.Forms.Application.Exit();
+            DisconnectEvent(sc, EventArgs.Empty);
         }
 
         /* **************************************************************
@@ -169,6 +183,9 @@ namespace AICarriers {
                 // init menu
                 sc.MenuAddItem("AI Ships", ID.EVENT_TITLE_MENU, 0);
                 sc.MenuAddSubItem(ID.EVENT_TITLE_MENU, "Show/hide menu (" + keyShort + ")", ID.EVENT_TITLE_MENU_SHOW, 0);
+
+                // fire event
+                OpenEvent(sc, new OpenEventArgs(data.szApplicationName));
             }
             catch (SimConnect.SimConnectException ex) {
                 log.Warning(ex.ToString());
