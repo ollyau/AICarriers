@@ -339,7 +339,8 @@ namespace AICarriers {
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void logInsertionPacket(string container) {
-            requestIDs[insertIDptr] = sc.LastSentPacketID;
+            // potential off by one error in beatlesblog simconnect?
+            requestIDs[insertIDptr] = sc.LastSentPacketID - 1;
             insertedContainers[insertIDptr] = container;
 
             insertIDptr++;
@@ -349,25 +350,33 @@ namespace AICarriers {
         }
 
         void sc_OnRecvException(SimConnect sender, SIMCONNECT_RECV_EXCEPTION data) {
-            log.Warning(string.Format("OnRecvException: {0}", Enum.GetName(typeof(SIMCONNECT_EXCEPTION), data.dwException)));
-
             int reqId = (int)data.dwSendID;
             if (reqId <= 0)
                 return;
 
+            bool found = false;
             // find erroring packet
             for (int i = 0; i < requestIDs.Length; i++) {
                 if (requestIDs[i] != -1 && requestIDs[i] == reqId) {
                     // print error message
                     try {
+                        found = true;
                         string message = string.Format("Error inserting object \"{0}\": {1}", insertedContainers[i], Enum.GetName(typeof(SIMCONNECT_EXCEPTION), data.dwException));
                         sc.Text(SIMCONNECT_TEXT_TYPE.PRINT_RED, 8.0f, ID.REQUEST_ERROR_TEXT, message);
                         log.Warning(message);
                     }
                     catch (SimConnect.SimConnectException ex) {
+                        found = false;
                         log.Warning(ex.ToString());
                     }
+                    break;
                 }
+            }
+
+            if (!found) {
+                string message = string.Format("OnRecvException: {0}", Enum.GetName(typeof(SIMCONNECT_EXCEPTION), data.dwException));
+                log.Warning(message);
+                sc.Text(SIMCONNECT_TEXT_TYPE.PRINT_RED, 8.0f, ID.REQUEST_ERROR_TEXT, message);
             }
         }
 
