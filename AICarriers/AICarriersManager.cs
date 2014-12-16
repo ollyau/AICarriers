@@ -28,9 +28,6 @@ namespace AICarriers {
         }
     }
 
-    public delegate void OpenEventHandler(object sender, OpenEventArgs e);
-    public delegate void DisconnectEventHandler(object sender, EventArgs e);
-
     public class OpenEventArgs : EventArgs {
         public string SimulatorName { get; private set; }
         public OpenEventArgs(string SimulatorName) {
@@ -95,8 +92,8 @@ namespace AICarriers {
         private Log log;
 
         // events
-        public event OpenEventHandler OpenEvent;
-        public event DisconnectEventHandler DisconnectEvent;
+        public EventHandler<OpenEventArgs> OpenEvent;
+        public EventHandler DisconnectEvent;
 
         public AICarriersManager(string confDirectory) {
             log = Log.Instance;
