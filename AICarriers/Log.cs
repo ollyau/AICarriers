@@ -56,6 +56,9 @@ namespace AICarriers {
         }
 
         public void Warning(string s) {
+#if DEBUG
+            ShouldSave = true;
+#endif
             string message = string.Format("{0} Warning {1}", DateTime.Now.ToString("HH:mm:ss.fff"), s);
             System.Diagnostics.Debug.WriteLine(message);
             logData.AppendLine(message);

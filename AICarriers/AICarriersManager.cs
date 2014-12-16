@@ -95,6 +95,20 @@ namespace AICarriers {
         public EventHandler<OpenEventArgs> OpenEvent;
         public EventHandler DisconnectEvent;
 
+        protected virtual void OnRaiseOpenEvent(OpenEventArgs e) {
+            EventHandler<OpenEventArgs> handler = OpenEvent;
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
+
+        protected virtual void OnRaiseDisconnectEvent(EventArgs e) {
+            EventHandler handler = DisconnectEvent;
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
+
         public AICarriersManager(string confDirectory) {
             log = Log.Instance;
             sc = new SimConnect(null);
@@ -146,7 +160,7 @@ namespace AICarriers {
         public void Disconnect() {
             log.Info("Disconnecting.");
             sc.Close();
-            DisconnectEvent(sc, EventArgs.Empty);
+            OnRaiseDisconnectEvent(EventArgs.Empty);
         }
 
         /* **************************************************************
@@ -182,7 +196,7 @@ namespace AICarriers {
                 sc.MenuAddSubItem(ID.EVENT_TITLE_MENU, "Show/hide menu (" + keyShort + ")", ID.EVENT_TITLE_MENU_SHOW, 0);
 
                 // fire event
-                OpenEvent(sc, new OpenEventArgs(data.szApplicationName));
+                OnRaiseOpenEvent(new OpenEventArgs(data.szApplicationName));
             }
             catch (SimConnect.SimConnectException ex) {
                 log.Warning(ex.ToString());
