@@ -7,7 +7,7 @@ Original description:
 
 > **AICarriers**: This is a small software that allows you to place and control single ships or complete naval fleets in Flight Simulator X. Doesn't need complex edit of traffic files or mission files. Just add carriers when you are in free flight, anywhere you want.
 
-This version targets the [.NET Framework 4.0 Client Profile](http://www.microsoft.com/en-us/download/details.aspx?id=17113) and requires Flight Simulator X: Acceleration or SP2.
+This version targets the [.NET Framework 4.0 Client Profile](http://www.microsoft.com/en-us/download/details.aspx?id=17113) and supports Microsoft Flight Simulator X: Acceleration and SP2, Microsoft ESP, Lockheed Martin Prepar3D and Prepar3D v2, and Dovetail Games Microsoft Flight Simulator X: Steam Edition.
 
 Usage
 ---
